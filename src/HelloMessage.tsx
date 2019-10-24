@@ -41,17 +41,15 @@ export default class Counter extends React.Component {
             selectedOption: selectedOption,
             allowSelect: true,
         }));
-        this.handleFilter()
+        this.handleFilter(selectedOption)
     };
 
-    handleFilter = () => {
-        if(this.state.allowSelect) {
-            this.handleFilterColor()
-        }
+    handleFilter = (selectedOption: any) => {
+            this.handleFilterColor(selectedOption)
     };
 
-    handleFilterColor = () => {
-        const option = this.state.selectedOption;
+    handleFilterColor = (selectedOption: any) => {
+        const option = selectedOption;
         if(option == null) return;
 
         let select: string[] = [];
