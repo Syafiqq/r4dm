@@ -68,25 +68,6 @@ export default class Counter extends React.Component {
                 const {max: max1} = option;
                 const max = max1;
                 if (h > min && h < max) {
-                    if (saturation != null) {
-                        if(saturation === true) {
-                            if(l < 50)
-                                select.push(value)
-                        }
-                        else
-                            select.push(value)
-                    }
-                    else {
-                        select.push(value);
-                    }
-                }
-            })
-        }
-        else {
-            this.state.colors.map((value, index) => {
-                let {r, g, b} = this.hexToRgb(value);
-                let {h, s, l} = this.rgbToHsl(r, g, b);
-                if (saturation != null) {
                     if(saturation === true) {
                         if(l < 50)
                             select.push(value)
@@ -94,9 +75,18 @@ export default class Counter extends React.Component {
                     else
                         select.push(value)
                 }
-                else {
-                    select.push(value);
+            })
+        }
+        else {
+            this.state.colors.map((value, index) => {
+                let {r, g, b} = this.hexToRgb(value);
+                let {h, s, l} = this.rgbToHsl(r, g, b);
+                if(saturation === true) {
+                    if(l < 50)
+                        select.push(value)
                 }
+                else
+                    select.push(value)
             })
         }
 
