@@ -58,37 +58,29 @@ export default class Counter extends React.Component {
         const option = selectedOption;
 
         let select: string[] = [];
-        if(selectedOption != null) {
+        this.state.colors.map((value, index) => {
+            let {r, g, b} = this.hexToRgb(value);
+            let {h, s, l} = this.rgbToHsl(r, g, b);
 
-            this.state.colors.map((value, index) => {
-                let {r, g, b} = this.hexToRgb(value);
-                let {h, s, l} = this.rgbToHsl(r, g, b);
+            let remove = false;
+            if(selectedOption != null) {
                 const {min: min1} = option;
                 const min = min1;
                 const {max: max1} = option;
                 const max = max1;
-                if (h > min && h < max) {
-                    if(saturation === true) {
-                        if(l < 50)
-                            select.push(value)
-                    }
-                    else
-                        select.push(value)
-                }
-            })
-        }
-        else {
-            this.state.colors.map((value, index) => {
-                let {r, g, b} = this.hexToRgb(value);
-                let {h, s, l} = this.rgbToHsl(r, g, b);
-                if(saturation === true) {
-                    if(l < 50)
-                        select.push(value)
-                }
-                else
-                    select.push(value)
-            })
-        }
+                if(h < min || h > max)
+                    remove = true;
+            }
+
+            if (saturation != null) {
+                if(saturation === true)
+                    if(l > 50)
+                        remove = true
+            }
+
+            if(!remove)
+                select.push(value)
+        });
 
         this.setState(state => ({
             selectedColors: select
