@@ -19,7 +19,7 @@ export default class Counter extends React.Component {
         selectedColors: Array<string>(),
         selectedOption: null,
         allowSelect:Boolean,
-        saturation: Boolean
+        saturation: false
     };
 
     constructor({props}: { props: any }) {
@@ -41,28 +41,64 @@ export default class Counter extends React.Component {
             selectedOption: selectedOption,
             allowSelect: true,
         }));
-        this.handleFilter(selectedOption)
+        this.handleFilterColor(selectedOption, this.state.saturation)
     };
 
-    handleFilter = (selectedOption: any) => {
-            this.handleFilterColor(selectedOption)
+    handleSaturationChange = (event: any) => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        this.setState(state => ({
+            saturation: value,
+        }));
+        this.handleFilterColor(this.state.selectedOption, value)
+
     };
 
-    handleFilterColor = (selectedOption: any) => {
+    handleFilterColor = (selectedOption: any, saturation : any) => {
         const option = selectedOption;
-        if(option == null) return;
 
         let select: string[] = [];
-        const {min: min1} = option;
-        const min = min1;
-        const {max: max1} = option;
-        const max = max1;
-        this.state.colors.map((value, index) => {
-            let {r, g, b} = this.hexToRgb(value);
-            let {h, s, l} = this.rgbToHsl(r, g, b);
-            if(h > min && h < max)
-                select.push(value)
-        })
+        if(selectedOption != null) {
+
+            this.state.colors.map((value, index) => {
+                let {r, g, b} = this.hexToRgb(value);
+                let {h, s, l} = this.rgbToHsl(r, g, b);
+                const {min: min1} = option;
+                const min = min1;
+                const {max: max1} = option;
+                const max = max1;
+                if (h > min && h < max) {
+                    if (saturation != null) {
+                        if(saturation === true) {
+                            if(l < 50)
+                                select.push(value)
+                        }
+                        else
+                            select.push(value)
+                    }
+                    else {
+                        select.push(value);
+                    }
+                }
+            })
+        }
+        else {
+            this.state.colors.map((value, index) => {
+                let {r, g, b} = this.hexToRgb(value);
+                let {h, s, l} = this.rgbToHsl(r, g, b);
+                if (saturation != null) {
+                    if(saturation === true) {
+                        if(l < 50)
+                            select.push(value)
+                    }
+                    else
+                        select.push(value)
+                }
+                else {
+                    select.push(value);
+                }
+            })
+        }
 
         this.setState(state => ({
             selectedColors: select
@@ -145,6 +181,14 @@ export default class Counter extends React.Component {
                   onChange={this.handleChange}
                   options={options}
                 />
+              <label>
+                  Darker ? :
+                  <input
+                      name="isGoing"
+                      type="checkbox"
+                      checked={this.state.saturation}
+                      onChange={this.handleSaturationChange} />
+              </label>
               <GridLayout className="layout" cols={col} rowHeight={100} width={500}>
                   {this.state.selectedColors.map((value, index) => {
                       cr = Math.floor( index / col);
